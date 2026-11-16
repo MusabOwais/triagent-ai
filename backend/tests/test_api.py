@@ -64,3 +64,14 @@ def test_static_endpoints():
     r = c.get("/rules").json(); assert "Bed priority" in r["text"]
     assert c.get("/metrics").status_code == 200
     a = c.get("/demo/assets").json(); assert a["ecg"] and a["xray"]
+
+
+def test_ml_failure_falls_back_to_labelled_stub(monkeypatch):
+    import ml_bridge as ML
+
+    def boom(*a, **k):
+        raise RuntimeError("model not trained")
+    monkeypatch.setattr(ML, "_try", lambda name, fb: (boom, "real"))
+    f = ML._guard("flag_ecg", ML._stub_flag_ecg)
+    out = f("ptbxl_14912")
+    assert out["model"] == "stub" and "unavailable" in out["note"] and ML.STATUS["flag_ecg"].startswith("stub fallback")

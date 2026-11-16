@@ -59,12 +59,36 @@ def _try(name, fallback):
                 return getattr(m, name), "real"
         except Exception:
             pass
-    return fallback, "stub"
+    return fallback, "stub"  # fallback is None when called from _guard
 
 
-predict_admission, ADMISSION_SOURCE = _try("predict_admission", _stub_predict_admission)
-flag_ecg, ECG_SOURCE = _try("flag_ecg", _stub_flag_ecg)
-flag_xray, XRAY_SOURCE = _try("flag_xray", _stub_flag_xray)
+STATUS = {}
+
+
+def _guard(name, fallback):
+    """Real function when it works; on any error (model not trained on this laptop, unknown demo id, adult-only
+    model given a child) fall back to the stub for THAT call, labelled so the screen never shows a stub as real."""
+    real, src = _try(name, None)
+    STATUS[name] = src
+    if real is None:
+        return fallback
+
+    def call(*a, **k):
+        try:
+            out = real(*a, **k)
+            STATUS[name] = "real"
+            return out
+        except Exception as e:  # noqa: BLE001 - any ML failure must not take the backend down
+            STATUS[name] = f"stub fallback ({type(e).__name__}: {e})"
+            out = fallback(*a, **k)
+            out["note"] = (out.get("note", "") + f" Real model unavailable ({e}); stub shown.").strip()
+            return out
+    return call
+
+
+predict_admission = _guard("predict_admission", _stub_predict_admission)
+flag_ecg = _guard("flag_ecg", _stub_flag_ecg)
+flag_xray = _guard("flag_xray", _stub_flag_xray)
 
 
 def metrics() -> dict:
@@ -78,4 +102,5 @@ def demo_assets() -> dict:
 
 
 def sources() -> dict:
-    return {"admission": ADMISSION_SOURCE, "ecg": ECG_SOURCE, "xray": XRAY_SOURCE}
+    """'real', 'stub', or 'stub fallback (reason)' for the most recent call of each function."""
+    return {"admission": STATUS["predict_admission"], "ecg": STATUS["flag_ecg"], "xray": STATUS["flag_xray"]}
