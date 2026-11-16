@@ -37,7 +37,7 @@ interface RView {
 const NAMES_KEY = 'relay-confirmed-by'
 const names: Record<string, string> = (() => { try { return JSON.parse(sessionStorage.getItem(NAMES_KEY) || '{}') } catch { return {} } })()
 
-async function call<T>(path: string, body?: unknown): Promise<T> {
+async function httpCall<T>(path: string, body?: unknown): Promise<T> {
   let r: Response
   try {
     r = await fetch(path, body === undefined ? undefined : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
@@ -46,6 +46,14 @@ async function call<T>(path: string, body?: unknown): Promise<T> {
   if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : r.status === 422 ? 'Some values are out of range. Check age (18–110), GCS (3–15) and pain (0–10).' : `The backend answered ${r.status}.`)
   return j as T
 }
+
+// Where requests go: the Python backend over HTTP, or the in-browser port of it (relayEngine.ts).
+type Transport = (path: string, body?: unknown) => Promise<unknown>
+let transport: Transport = httpCall
+let inBrowser = false
+const call = <T,>(path: string, body?: unknown) => transport(path, body) as Promise<T>
+/** Switches the adapter to the in-browser engine. Used for the hosted static build. */
+export function useBrowserEngine(t: Transport) { transport = t; inBrowser = true; return relayApi }
 
 let metaP: Promise<RMeta> | null = null
 const meta = () => (metaP ??= call<RMeta>('/api/meta').catch(e => { metaP = null; throw e }))
@@ -171,7 +179,8 @@ export const relayApi: Api = {
   async options(): Promise<Options> {
     const m = await meta()
     const can = (k: 'ecg' | 'xray') => m.models_loaded[k] || !!m.precomputed?.[k]
-    source.label = m.models_loaded.ecg && m.models_loaded.xray ? 'Live backend · real models'
+    source.label = inBrowser ? 'Browser demo · Yale model live, ECG and X-ray stored'
+      : m.models_loaded.ecg && m.models_loaded.xray ? 'Live backend · real models'
       : can('ecg') && can('xray') ? 'Live backend · ECG and X-ray results stored' : 'Live backend · ECG and X-ray weights missing'
     return {
       complaints: [...m.complaints, { id: '', label: 'Other, not listed' }, { id: '__none', label: 'Unknown, patient cannot say' }],

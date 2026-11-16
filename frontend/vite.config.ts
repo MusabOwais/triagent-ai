@@ -8,5 +8,6 @@ const backend = process.env.VITE_API_URL ?? 'http://localhost:8000'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server: { port: 5173, strictPort: true, proxy: { '/api': backend, '/samples': backend } },
+  // Only relay mode proxies; the other modes serve /samples from public/.
+  server: { port: 5173, strictPort: true, proxy: process.env.VITE_API === 'relay' ? { '/api': backend, '/samples': backend } : undefined },
 })

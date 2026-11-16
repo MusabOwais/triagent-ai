@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "dev:live": "VITE_API=relay vite"
+    "dev:live": "VITE_API=relay vite",
+    "dev:browser": "VITE_API=browser vite",
+    "check:engine": "node scripts/check-engine.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.5",
