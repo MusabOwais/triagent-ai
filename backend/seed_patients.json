@@ -1,0 +1,76 @@
+[
+  {
+    "id": "P-001", "name": "Demo Patient A (fictional)", "age": 58, "sex": "M",
+    "complaint_category": "chest_pain", "complaint_text": "Pressure-like central chest pain for 40 min",
+    "onset_min_ago": 55, "history": "Hypertension, high cholesterol", "medications": "Amlodipine, atorvastatin",
+    "allergies": "None known", "status": "waiting", "arrival_min_ago": 6, "esi": null,
+    "treatments": [{"min_ago": 20, "what": "Aspirin 324 mg PO"}],
+    "vitals": [
+      {"min_ago": 22, "source": "ambulance", "resp_rate": 16, "spo2": 97, "on_oxygen": false, "sbp": 138, "dbp": 86,
+       "heart_rate": 84, "temp_c": 36.8, "avpu": "A", "gcs": 15, "pain": 6, "rhythm": "sinus"}
+    ],
+    "_story": "Normal-looking vitals, low score, but the 10-minute ECG countdown is running. Demo: record ECG ptbxl_14912 -> AI flags abnormal -> +10 and telemetry."
+  },
+  {
+    "id": "P-002", "name": "Demo Patient B (fictional)", "age": 71, "sex": "F",
+    "complaint_category": "fever_infection", "complaint_text": "Fever and chills since yesterday, urinary burning",
+    "onset_min_ago": 1440, "history": "Type 2 diabetes", "medications": "Metformin", "allergies": "Penicillin (rash)",
+    "status": "waiting", "arrival_min_ago": 70, "esi": 3,
+    "treatments": [{"min_ago": 80, "what": "IV access, normal saline 500 mL started"}],
+    "vitals": [
+      {"min_ago": 55, "source": "triage", "resp_rate": 21, "spo2": 96, "on_oxygen": false, "sbp": 118, "dbp": 72,
+       "heart_rate": 95, "temp_c": 37.9, "avpu": "A", "gcs": 15, "pain": 3},
+      {"min_ago": 10, "source": "er", "resp_rate": 23, "spo2": 95, "on_oxygen": false, "sbp": 108, "dbp": 64,
+       "heart_rate": 112, "temp_c": 38.0, "avpu": "A", "gcs": 15, "pain": 3}
+    ],
+    "_story": "Getting worse while waiting: NEWS2 3 -> 6 across repeat vitals -> deterioration alert."
+  },
+  {
+    "id": "P-003", "name": "Demo Patient C (fictional)", "age": 81, "sex": "M",
+    "complaint_category": "shortness_of_breath", "complaint_text": "Short of breath for 2 days, productive cough",
+    "onset_min_ago": 2880, "history": "COPD, atrial fibrillation", "medications": "Tiotropium, apixaban",
+    "allergies": "None known", "status": "waiting", "arrival_min_ago": 45, "esi": 2,
+    "treatments": [{"min_ago": 50, "what": "Albuterol nebulizer"}],
+    "vitals": [
+      {"min_ago": 50, "source": "ambulance", "resp_rate": 22, "spo2": 93, "on_oxygen": false, "sbp": 124, "dbp": 70,
+       "heart_rate": 98, "temp_c": 38.6, "avpu": "A", "gcs": 15, "pain": 2}
+    ],
+    "xray": {"image_id": "00000773_001.png", "min_ago": 15},
+    "_story": "Elderly, short of breath, fever. X-ray AI flags pneumonia -> possible isolation."
+  },
+  {
+    "id": "P-004", "name": "Demo Patient D (fictional)", "age": 34, "sex": "M",
+    "complaint_category": "trauma", "complaint_text": "Fell from ladder, right wrist deformity, forehead graze",
+    "onset_min_ago": 60, "history": "None", "medications": "None", "allergies": "None known",
+    "injuries": ["suspected_fracture", "minor_wound"], "status": "waiting", "arrival_min_ago": 30, "esi": 3,
+    "treatments": [{"min_ago": 40, "what": "Wrist splint"}, {"min_ago": 38, "what": "Fentanyl 50 mcg IV"}],
+    "vitals": [
+      {"min_ago": 40, "source": "ambulance", "resp_rate": 18, "spo2": 98, "on_oxygen": false, "sbp": 132, "dbp": 80,
+       "heart_rate": 92, "temp_c": 36.7, "avpu": "A", "gcs": 15, "pain": 7}
+    ],
+    "_story": "Trauma with suspected fracture: injury points (draft), regular floor."
+  },
+  {
+    "id": "P-005", "name": "Demo Patient E (fictional)", "age": 29, "sex": "F",
+    "complaint_category": "abdominal_pain", "complaint_text": "Mild lower abdominal cramping, eating and drinking normally",
+    "onset_min_ago": 600, "history": "None", "medications": "None", "allergies": "Sulfa drugs",
+    "status": "waiting", "arrival_min_ago": 190, "esi": 4,
+    "vitals": [
+      {"min_ago": 185, "source": "triage", "resp_rate": 16, "spo2": 99, "on_oxygen": false, "sbp": 116, "dbp": 74,
+       "heart_rate": 78, "temp_c": 36.9, "avpu": "A", "gcs": 15, "pain": 3}
+    ],
+    "_story": "Stable, minor complaint, long wait: waiting-time points move her up the queue."
+  },
+  {
+    "id": "P-006", "name": "Demo Patient F (fictional)", "age": 66, "sex": "F",
+    "complaint_category": "stroke_signs", "complaint_text": "Sudden slurred speech and left arm weakness, found by husband",
+    "onset_min_ago": 35, "history": "Type 1 diabetes, hypertension", "medications": "Insulin glargine, lisinopril",
+    "allergies": "None known", "status": "en_route",
+    "treatments": [],
+    "vitals": [
+      {"min_ago": 8, "source": "ambulance", "resp_rate": 18, "spo2": 96, "on_oxygen": false, "sbp": 168, "dbp": 94,
+       "heart_rate": 88, "temp_c": 36.6, "avpu": "C", "gcs": 14, "pain": 0, "glucose_mg_dl": 62}
+    ],
+    "_story": "Still in the ambulance (Incoming, unranked). Stroke alert plus the low-glucose mimic note."
+  }
+]

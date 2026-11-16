@@ -1,0 +1,33 @@
+HOW THE BED-PRIORITY SCORE WORKS
+
+A. Needs a bed (0-100): admission probability from a model trained on the Yale ED admission dataset, x 100. The "ambulance" model (no ESI) is used until a triage nurse enters ESI, then the "triage" model.
+
+B. Sick right now (0-100): NEWS2 (0-20) x 5, from the latest complete set of vital signs. NEWS2 uses breathing rate, oxygen saturation (Scale 1 only), air or oxygen, systolic blood pressure, pulse, consciousness and temperature. If a parameter is missing, NEWS2 is shown as incomplete (n/7) and counts only the parameters present.
+
+C. Findings (points added):
+- ECG AI flag (abnormal): +10
+- Chest X-ray AI flag (any of pneumonia, effusion, edema, cardiomegaly, pneumothorax): +10
+- Visible injuries: minor wound 2, suspected fracture 5, open fracture 10, minor burn 5, major burn 15, heavy bleeding 15, frostbite 5. DRAFT: clinician review needed.
+
+Bed priority = min(100, round((A + B) / 2 + C)).
+
+AI can only raise the score. A normal AI result adds 0 and never removes an earlier flag. Only a clinician marking a finding "Reviewed - normal" removes its points.
+
+Queue rank = bed priority + 1 point per full 15 minutes waited since arrival, so nobody waits forever.
+
+Suggested bed type (DRAFT rules, first match wins):
+1. NEWS2 7 or more, or GCS 8 or less -> ICU review
+2. Abnormal ECG AI flag (unreviewed or confirmed) -> Telemetry (heart-monitored)
+3. X-ray AI flags pneumonia and temperature 38.1 C or more -> Possible isolation
+4. Otherwise -> Regular floor
+The charge nurse confirms every bed request. The app never assigns a bed.
+
+Protocol alerts (not driven by the score):
+- Chest pain: ECG due within 10 minutes of arrival; turns red when overdue.
+- Stroke signs: stroke alert. If blood glucose is below 70 mg/dL: "Low blood sugar can mimic stroke - check glucose".
+
+Deterioration alert: only when NEWS2 rises by 2 or more between two consecutive complete sets of vitals, or crosses into a higher band (5-6 medium, 7+ high). A single high reading that did not rise does not alert.
+
+Not implemented: NEWS2 SpO2 Scale 2 (for patients with chronic CO2 retention). GCS below 15 always scores 3, even if that is the patient's baseline.
+
+Demo patients are fictional. A real system would limit access by role (HIPAA).
