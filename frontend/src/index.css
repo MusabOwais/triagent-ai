@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/* One calm neutral family tinted toward the action blue; green / amber / red are reserved for clinical state. */
+@theme {
+  --font-sans: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-page: #edf0f3;
+  --color-surface: #ffffff;
+  --color-sunk: #f5f7f9;
+  --color-ink: #12202c;
+  --color-muted: #52616e;
+  --color-line: #d2d9e0;
+  --color-action: #1d417d;
+  --color-action-hover: #16335f;
+  --color-ok: #17683f;
+  --color-ok-bg: #dff1e6;
+  --color-warn: #7d4a00;
+  --color-warn-bg: #ffecc2;
+  --color-crit: #a8211a;
+  --color-crit-bg: #fce3e0;
+}
+
+html { background: var(--color-page); }
+body { margin: 0; color: var(--color-ink); font-family: var(--font-sans); font-size: 16px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+.num { font-variant-numeric: tabular-nums; }
+::selection { background: #c9d8f2; color: var(--color-ink); }
+:focus-visible { outline: 2px solid var(--color-action); outline-offset: 2px; border-radius: 4px; }
+input, select, textarea { accent-color: var(--color-action); caret-color: var(--color-action); }
+h1, h2, h3 { text-wrap: balance; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
