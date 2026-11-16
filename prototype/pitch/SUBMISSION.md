@@ -1,4 +1,4 @@
-# Devpost submission: Relay Triage
+# Devpost submission: Triagent AI
 
 **Track:** Best Clinical Impact
 **Datasets:** Yale ED Admission Prediction, PTB-XL, NIH ChestX-ray14
@@ -12,7 +12,7 @@ Admitted patients often wait in the ER for hours until a hospital bed opens. Whi
 
 ## What it does
 
-- **In the ambulance**, the crew enters vitals, chief complaint, GCS, cardiac rhythm, visible injuries, history, medications, allergies and treatments. Relay Triage gives a **1–100 risk score**, shows exactly what moved it, and places a **provisional bed request** (ICU, CCU, Telemetry, Psychiatric or General ward) so the hospital can prepare.
+- **In the ambulance**, the crew enters vitals, chief complaint, GCS, cardiac rhythm, visible injuries, history, medications, allergies and treatments. Triagent AI gives a **1–100 risk score**, shows exactly what moved it, and places a **provisional bed request** (ICU, CCU, Telemetry, Psychiatric or General ward) so the hospital can prepare.
 - **At the ER door**, the whole record arrives as a digital handoff.
 - **ECG and chest X-ray queues** are ordered by risk. Chest pain still gets an ECG within 10 minutes, whatever the score.
 - **After each test**, our ECG and X-ray models adjust the score. Dangerous findings raise it. Reassuring findings can lower it only slightly, never when the model is unsure, and never below what the vital signs demand.
@@ -47,7 +47,7 @@ Admitted patients often wait in the ER for hours until a hospital bed opens. Whi
 - A simple, transparent model can match a black box when the inputs are limited.
 - In clinical tools, what the system refuses to do (lower a score on weak evidence, assign a bed on its own) matters as much as what it does.
 
-## What's next for Relay Triage
+## What's next for Triagent AI
 
 - Validate on real ambulance-recorded vitals and on ECGs recorded in the field.
 - Train the X-ray model on the full NIH set (expected AUROC ~0.8) so reassuring films can safely lower scores.

@@ -1,6 +1,6 @@
 // The one place that decides where data comes from.
-//   VITE_API=browser   the Relay Triage scoring ported to the browser (default for production builds; no server)
-//   VITE_API=relay     the Relay Triage Python backend in prototype/, via the dev proxy
+//   VITE_API=browser   the Triagent AI scoring ported to the browser (default for production builds; no server)
+//   VITE_API=relay     the Triagent AI Python backend in prototype/, via the dev proxy
 //   VITE_API=mock      built-in mock with stub models (default for `npm run dev`)
 //   VITE_API=contract  a backend that follows docs/CONTRACT.md at VITE_API_URL
 import data from '../data/relay.json'

@@ -1,29 +1,54 @@
 @import "tailwindcss";
 
-/* One calm neutral family tinted toward the action blue; green / amber / red are reserved for clinical state. */
+/* Arrivals board. Scene: a charge nurse glancing up at a wall board across a bright, noisy ER, and judges
+   reading a laptop at arm's length. A matte dark board with large warm-white characters reads at distance.
+   Signal yellow means "the next decision" and nothing else; green / orange / red are lamps for clinical state. */
 @theme {
-  --font-sans: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --color-page: #edf0f3;
-  --color-surface: #ffffff;
-  --color-sunk: #f5f7f9;
-  --color-ink: #12202c;
-  --color-muted: #52616e;
-  --color-line: #d2d9e0;
-  --color-action: #1d417d;
-  --color-action-hover: #16335f;
-  --color-ok: #17683f;
-  --color-ok-bg: #dff1e6;
-  --color-warn: #7d4a00;
-  --color-warn-bg: #ffecc2;
-  --color-crit: #a8211a;
-  --color-crit-bg: #fce3e0;
+  --font-sans: "Barlow", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Barlow Condensed", "Barlow", "Arial Narrow", ui-sans-serif, sans-serif;
+  --color-page: #0c0e0f;
+  --color-surface: #15181a;
+  --color-sunk: #1d2124;
+  --color-ink: #f4f0e6;
+  --color-muted: #a6aaa2;
+  --color-line: #2d3236;
+  --color-action: #ffd60a;
+  --color-action-hover: #ffe45c;
+  --color-ok: #62d992;
+  --color-ok-bg: #11301f;
+  --color-warn: #ffa64d;
+  --color-warn-bg: #38220c;
+  --color-crit: #ff6259;
+  --color-crit-bg: #3c1512;
+  --color-info: #a9cdfc;
+  --color-info-bg: #18242f;
 }
 
-html { background: var(--color-page); }
+html { background: var(--color-page); color-scheme: dark; scrollbar-color: #3a4045 var(--color-page); }
 body { margin: 0; color: var(--color-ink); font-family: var(--font-sans); font-size: 16px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
 .num { font-variant-numeric: tabular-nums; }
-::selection { background: #c9d8f2; color: var(--color-ink); }
-:focus-visible { outline: 2px solid var(--color-action); outline-offset: 2px; border-radius: 4px; }
+::selection { background: var(--color-action); color: #0c0e0f; }
+:focus-visible { outline: 2px solid var(--color-action); outline-offset: 2px; border-radius: 3px; }
 input, select, textarea { accent-color: var(--color-action); caret-color: var(--color-action); }
 h1, h2, h3 { text-wrap: balance; }
+h1 { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.015em; line-height: 1.05; }
+th { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.09em; }
+a { text-underline-offset: 3px; }
+
+/* Split-flap tile: one character per tile, with the hinge line across the middle. Re-mounting a tile
+   (React key = its value) replays the flip, so a score visibly flips when it changes. */
+.flap {
+  position: relative; display: inline-grid; place-items: center; min-width: 0.66em; padding: 0.04em 0.07em 0;
+  background: #050606; color: var(--color-ink); border-radius: 0.07em; box-shadow: inset 0 0 0 1px #262b2f;
+  font-family: var(--font-display); font-weight: 700; line-height: 1.08; font-variant-numeric: tabular-nums;
+  transform-origin: 50% 50%; animation: flap 0.34s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.flap::after { content: ""; position: absolute; inset: 50% 0 auto 0; height: 1px; background: #000; box-shadow: 0 1px 0 rgb(255 255 255 / 0.07); }
+.flaps { display: inline-flex; gap: 0.06em; }
+@keyframes flap { from { transform: perspective(300px) rotateX(-78deg); filter: brightness(0.55); } to { transform: none; filter: none; } }
+
+/* Lamp: filled = on, hollow = off. State is never carried by colour alone. */
+.lamp { display: inline-block; width: 0.62em; height: 0.62em; border-radius: 50%; border: 2px solid currentColor; flex: none; }
+.lamp[data-on="true"] { background: currentColor; }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

@@ -1,10 +1,10 @@
-# Relay Triage
+# Triagent AI
 
 > Prototype branch of the team repo. It does not follow `docs/CONTRACT.md` (different score formula, bed types and API paths). Everything below is relative to this `prototype/` folder.
 
 **SacHacks HackRx 2026 · Best Clinical Impact track · proof of concept**
 
-Relay Triage follows an emergency patient from the ambulance to a hospital bed with one shared record and one risk score.
+Triagent AI follows an emergency patient from the ambulance to a hospital bed with one shared record and one risk score.
 
 1. **Ambulance.** The crew enters vitals, chief complaint, GCS, rhythm, visible injuries, history, medications, allergies and treatments. The app gives a **1–100 risk score** and a **provisional bed request**.
 2. **Handoff at the ER door.** The whole record arrives digitally, so nothing is lost on paper.

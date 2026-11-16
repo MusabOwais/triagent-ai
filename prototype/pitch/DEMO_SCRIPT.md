@@ -4,7 +4,7 @@ Before you start: run the server, open http://localhost:8000, click **Reset demo
 
 | Time | Screen | Say | Do |
 |---|---|---|---|
-| 0:00 | ER board | "Ambulance information arrives on paper and gets lost at each handoff. Relay Triage keeps one record and one risk score from the ambulance to the bed." | Point at the legend: 1–100, five bands. |
+| 0:00 | ER board | "Ambulance information arrives on paper and gets lost at each handoff. Triagent AI keeps one record and one risk score from the ambulance to the bed." | Point at the legend: 1–100, five bands. |
 | 0:15 | Ambulance | "A paramedic enters what they measure. The score is a model trained on 92,000 Yale ambulance arrivals." | Open **Ambulance**. Set age 68, complaint chest pain, HR 104. Change SpO2 to 89 and tick oxygen: the score jumps and the NEWS2 floor appears. |
 | 0:35 | Ambulance | "Every point is explained: these bars show what moved the score. Chest pain gives a provisional telemetry bed request, so the hospital can prepare." | Point at **What moved the score** and **Provisional bed**. Enter a name, click **Send handoff to ER**. |
 | 0:50 | Patient | "On arrival the full handoff is here: allergies, medications, treatments with times. Nobody has to re-ask." | Click **Mark arrived and receive handoff**. |

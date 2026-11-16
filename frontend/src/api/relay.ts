@@ -1,4 +1,4 @@
-// Adapter for the Relay Triage backend in prototype/app/server.py (paths under /api).
+// Adapter for the Triagent AI backend in prototype/app/server.py (paths under /api).
 // It translates that API into the shapes the screens use. Requests go to the same origin;
 // vite.config.ts proxies /api and /samples to the backend, so no CORS setup is needed.
 import { buildHandoff, cToF, fToC } from './rules'
@@ -263,5 +263,13 @@ BED TYPE (provisional until a clinician confirms)
   NEWS2 7 or more → ICU · ECG suggests MI → CCU · chest pain, syncope, or ST/T or conduction change on ECG → Telemetry
   Suicidal thoughts or psychiatric evaluation with NEWS2 under 5 → Psychiatric · otherwise → General ward
   The app suggests. It never assigns a bed on its own.
+
+WHAT THIS DOES NOT DO YET
+  The Yale data records triage vitals, used here as a stand-in for ambulance vitals. Real ambulance data is the next test.
+  The model predicts admission, not severity. Severe cases are caught by the NEWS2 floor and crew findings, not the model.
+  The X-ray model was trained on a small subset (AUROC 0.708), so it can raise a score but never lower one.
+  Crew-finding weights, ECG and X-ray weights and bed rules are hand-set and await clinician review.
+  A score does not create beds. We do not claim shorter waits.
+  No hospital-system integration and no role-based access (HIPAA) yet. All patients shown are fictional.
 
 The three datasets come from different patients. They are combined by these written rules, not by one trained model.`

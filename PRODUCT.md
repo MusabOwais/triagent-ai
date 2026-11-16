@@ -19,7 +19,7 @@ React + Vite + TypeScript + Tailwind in `frontend/` (set by the Role 3 brief). B
 
 ## Product Purpose
 
-A proof of concept that follows an emergency patient from the ambulance to a hospital bed with one shared record. It shows a bed-priority score built from visible parts, protocol alerts for time-critical tests, and automatic handoff summaries. Success: the sickest patient gets the next suitable bed, nobody gets worse unnoticed, and staff stop re-entering the same information.
+Triagent AI is a proof of concept that follows an emergency patient from the ambulance to a hospital bed with one shared record. It shows a bed-priority score built from visible parts, protocol alerts for time-critical tests, and automatic handoff summaries. Success: the sickest patient gets the next suitable bed, nobody gets worse unnoticed, and staff stop re-entering the same information.
 
 ## Positioning
 

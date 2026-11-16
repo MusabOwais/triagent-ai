@@ -1,7 +1,7 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { api } from '../api'
-import type { BedType, ModelMetric, Options, PatientView } from '../api'
-import { Btn, Chip, cx, Field, fmtWait, Input, labelOf, News2Pill, Panel, Select, toast, useLive, useNow, useOptions } from '../ui'
+import type { BedType, Options, PatientView } from '../api'
+import { Btn, Chip, cx, Field, Flaps, fmtWait, Input, labelOf, News2Pill, Panel, Select, toast, useLive, useNow, useOptions } from '../ui'
 
 
 export default function Board() {
@@ -12,8 +12,6 @@ export default function Board() {
   const ccName = (id: string) => labelOf(opts?.complaints, id)
   const [opened, setOpened] = useState<BedType | null>(null) // "a bed of this type just opened"
   const [reqFor, setReqFor] = useState<string | null>(null)
-  const [rules, setRules] = useState(''); const [metrics, setMetrics] = useState<ModelMetric[]>([])
-  useEffect(() => { api.rules().then(setRules).catch(() => {}); api.metrics().then(setMetrics).catch(() => {}) }, [])
 
   if (error && !data) return <p className="rounded-md bg-crit-bg px-4 py-3 font-semibold text-crit">{error}</p>
   if (!data || !opts) return <div className="h-64 animate-pulse rounded-lg bg-line/50" aria-label="Loading bed board" />
@@ -27,8 +25,8 @@ export default function Board() {
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-[26px] font-extrabold tracking-tight">Bed board</h1>
-          <p className="mt-1 max-w-[70ch] text-muted">Ranked by {opts.scoreName.toLowerCase()} plus time waited, so nobody waits forever. The board suggests; you confirm every bed request.</p>
+          <h1 className="text-[38px] font-bold">Bed board</h1>
+          <p className="mt-1 max-w-[70ch] text-muted">Ranked by {opts.scoreName.toLowerCase()} plus time waited, so nobody waits forever. The board suggests; you confirm every bed request. <a className="font-semibold text-ink underline" href="#how">How every number is made</a></p>
         </div>
         <div className="num text-[15px] text-muted">{waiting.length} waiting · {incoming.length} incoming · {requested.length} requested</div>
       </div>
@@ -38,8 +36,8 @@ export default function Board() {
           <ul className="grid gap-2 md:grid-cols-2">
             {incoming.map(v => (
               <li key={v.patient.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border border-line px-3 py-2.5">
-                <span className="num w-9 text-[22px] font-extrabold">{v.scores.priority}</span>
-                <a href={`#p-${v.patient.id}`} className="font-bold underline-offset-4 hover:underline">{v.patient.name}</a>
+                <Flaps value={v.scores.priority} className="text-[38px]" />
+                <a href={`#p-${v.patient.id}`} className="font-display text-[22px] font-semibold uppercase leading-tight tracking-[0.03em] underline-offset-4 hover:underline">{v.patient.name}</a>
                 <span className="text-muted">{ccName(v.patient.complaint_category)}</span>
                 <News2Pill n={v.scores.news2} />
                 {v.alerts.map(a => <Chip key={a.message} tone={a.level === 'critical' ? 'crit' : 'warn'}>{a.message.split(':')[0]}</Chip>)}
@@ -58,7 +56,7 @@ export default function Board() {
           </Select>
         </label>}>
         {opened && (
-          <p className={cx('mb-3 rounded-md px-3 py-2 text-[15px] font-semibold', match ? 'bg-[#e6ecf7] text-action' : 'bg-sunk text-muted')}>
+          <p className={cx('mb-3 rounded-md px-3 py-2 text-[15px] font-semibold', match ? 'bg-action font-display text-[18px] uppercase tracking-[0.04em] text-black' : 'bg-sunk text-muted')}>
             {match ? <>Open bed: {bedName(opened)}. Highest-ranked match: {match.patient.name}. Review and send the request if you agree.</> : <>Open bed: {bedName(opened)}. Nobody waiting is suggested for this bed type.</>}
           </p>
         )}
@@ -71,19 +69,19 @@ export default function Board() {
                   const p = v.patient, hit = match?.patient.id === p.id, bonus = v.scores.wait_bonus ?? 0
                   return (
                     <Fragment key={p.id}>
-                      <tr className={cx('border-b border-line align-top', hit && 'bg-[#eef2fa]')}>
-                        <td className="num py-3 pr-3 text-muted">{i + 1}</td>
+                      <tr className={cx('border-b border-line align-top', hit && 'bg-action/10')}>
+                        <td className="num py-3 pr-3 font-display text-[22px] font-semibold text-muted">{i + 1}</td>
                         <td className="py-3 pr-3">
-                          <a href={`#p-${p.id}`} className="font-bold underline-offset-4 hover:underline">{p.name}</a>
+                          <a href={`#p-${p.id}`} className="font-display text-[22px] font-semibold uppercase leading-tight tracking-[0.03em] underline-offset-4 hover:underline">{p.name}</a>
                           <div className="text-[14px] text-muted">{p.age} y · {ccName(p.complaint_category)}{p.esi ? ` · ESI ${p.esi}` : ''}</div>
                           {v.alerts.length > 0 && <div className="mt-1 flex flex-wrap gap-1">{v.alerts.map(a => {
                             const left = a.due_at ? Math.round((Date.parse(a.due_at) - now) / 60000) : null
                             return <Chip key={a.message} tone={a.level === 'critical' ? 'crit' : 'warn'}>{a.message}{left !== null ? (left >= 0 ? ` · ${left} min left` : ` · overdue ${-left} min`) : ''}</Chip> })}</div>}
                         </td>
-                        <td className="num whitespace-nowrap py-3 pr-3"><span className="text-[22px] font-extrabold leading-none">{v.scores.priority}</span>{bonus > 0 && <span className="ml-1 text-[14px] text-muted">+{bonus} wait</span>}</td>
+                        <td className="num whitespace-nowrap py-3 pr-3"><Flaps value={v.scores.priority} className="text-[38px]" />{bonus > 0 && <span className="ml-1 text-[14px] text-muted">+{bonus} wait</span>}</td>
                         <td className="py-3 pr-3"><News2Pill n={v.scores.news2} /></td>
                         <td className="num py-3 pr-3">{v.scores.parts.A}%</td>
-                        <td className="py-3 pr-3"><span className="font-semibold">{bedName(v.bed_type.suggested)}</span><div className="text-[14px] text-muted">{v.bed_type.reason}</div></td>
+                        <td className="py-3 pr-3"><span className="font-display text-[20px] font-semibold uppercase tracking-[0.04em]">{bedName(v.bed_type.suggested)}</span><div className="text-[14px] text-muted">{v.bed_type.reason}</div></td>
                         <td className="num whitespace-nowrap py-3 pr-3">{fmtWait(v.scores.wait_minutes)}</td>
                         <td className="py-2 text-right"><Btn kind={hit ? 'primary' : 'secondary'} className="min-h-10 whitespace-nowrap px-3 text-[14px]" onClick={() => setReqFor(reqFor === p.id ? null : p.id)}>{reqFor === p.id ? 'Close' : 'Review bed request'}</Btn></td>
                       </tr>
@@ -101,30 +99,13 @@ export default function Board() {
           <ul className="divide-y divide-line text-[15px]">
             {requested.map(v => (
               <li key={v.patient.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2.5">
-                <a href={`#p-${v.patient.id}`} className="font-bold underline-offset-4 hover:underline">{v.patient.name}</a>
+                <a href={`#p-${v.patient.id}`} className="font-display text-[22px] font-semibold uppercase leading-tight tracking-[0.03em] underline-offset-4 hover:underline">{v.patient.name}</a>
                 <Chip tone="ok">{bedName(v.patient.bed_request!.bed_type)}</Chip>
                 <span className="text-muted">confirmed by {v.patient.bed_request!.confirmed_by}</span>
               </li>))}
           </ul>
         </Panel>
       )}
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="How every number is made">
-          <pre className="whitespace-pre-wrap font-sans text-[14px] leading-relaxed text-ink">{rules || 'Loading the rules…'}</pre>
-        </Panel>
-        <Panel title="About the models" aside={api.source.mock ? <Chip tone="warn">Stub models in use</Chip> : <Chip tone="ok">Measured on held-out test data</Chip>}>
-          <ul className="flex flex-col divide-y divide-line">
-            {metrics.map(m => (
-              <li key={m.name} className="py-3 first:pt-0 last:pb-0">
-                <div className="flex flex-wrap items-baseline justify-between gap-x-3"><b>{m.name}</b><span className="text-[14px] text-muted">{m.dataset}</span></div>
-                <div className="num text-[15px] font-semibold">{m.result}</div>
-                <div className="text-[14px] text-muted">{m.note}</div>
-              </li>))}
-          </ul>
-          <p className="mt-3 text-[14px] text-muted">The three datasets come from different patients, so no single model combines them. They meet only through the written rules on the left.</p>
-        </Panel>
-      </div>
     </div>
   )
 }

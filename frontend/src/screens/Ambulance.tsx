@@ -4,7 +4,7 @@ import type { Complaint, DemoAssets, Injury, IntakeForm, PatientView, Vitals } f
 import { cToF, news2Of } from '../api/rules'
 import {
   Btn, Chip, draftHasValues, draftProblems, draftToVitals, emptyDraft, Field, fmtClock, Input, News2Pill,
-  labelOf, Panel, Select, TextArea, toast, useOptions, VitalsFields,
+  Flaps, labelOf, Panel, Select, TextArea, toast, useOptions, VitalsFields,
 } from '../ui'
 import type { VitalsDraft } from '../ui'
 
@@ -71,7 +71,7 @@ export default function Ambulance() {
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
       <div className="flex min-w-0 flex-col gap-4">
         <div>
-          <h1 className="text-[26px] font-extrabold tracking-tight">Ambulance handoff</h1>
+          <h1 className="text-[38px] font-bold">Ambulance handoff</h1>
           <p className="mt-1 max-w-[65ch] text-muted">Enter it once here. The ER sees this record before you arrive, and nobody has to ask for it again.</p>
         </div>
 
@@ -112,7 +112,7 @@ export default function Ambulance() {
         <Panel title="Visible injuries" aside={<Chip tone="warn">{opts.injuryNote}</Chip>}>
           <div className="grid gap-2 sm:grid-cols-2">
             {opts.injuries.map(i => (
-              <label key={i.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-line px-3 text-[15px] has-checked:border-action has-checked:bg-[#eef2fa]">
+              <label key={i.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-line px-3 text-[15px] has-checked:border-action has-checked:bg-action/10">
                 <input id={`amb-inj-${i.id}`} type="checkbox" className="size-5" checked={injuries.includes(i.id)}
                   onChange={e => setInjuries(e.target.checked ? [...injuries, i.id] : injuries.filter(x => x !== i.id))} />
                 <span className="flex-1">{i.label}</span>{i.points !== undefined && <span className="num text-muted">+{i.points}</span>}
@@ -159,7 +159,7 @@ export default function Ambulance() {
             {preview ? (
               <>
                 <div className="flex items-end gap-3">
-                  <span className="num text-[52px] font-extrabold leading-none">{preview.scores.priority}</span>
+                  <Flaps value={preview.scores.priority} className="text-[56px]" />
                   <span className="pb-1 text-[14px] text-muted">{opts.scoreName.toLowerCase()}<br />out of 100</span>
                 </div>
                 <dl className="num grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 text-[15px]">
@@ -170,7 +170,7 @@ export default function Ambulance() {
                 </dl>
                 {preview.scores.strip && <p className="text-[14px] text-muted">{preview.scores.strip.formula}.</p>}
                 <p className="text-[14px] text-muted">Suggested bed: <b className="text-ink">{labelOf(opts.beds, preview.bed_type.suggested)}</b>. {preview.bed_type.reason}.</p>
-                {preview.alerts.filter(a => !a.due_at).map(a => <p key={a.message} className="rounded-md bg-crit-bg px-3 py-2 text-[14px] font-semibold text-crit">{a.message}</p>)}
+                {preview.alerts.filter(a => !a.due_at).map(a => <p key={a.message} className="rounded-[3px] bg-crit px-3 py-2 font-display text-[17px] font-semibold uppercase tracking-[0.04em] text-black">{a.message}</p>)}
               </>
             ) : (
               <p className="text-[14px] text-muted">{problems.length || !ageOk ? 'Fix the highlighted fields to see the score.' : api.preview ? 'The score appears once pulse, blood pressure, breathing rate, SpO2 and temperature are filled in.' : 'The score is calculated by the ER system when you send.'}</p>

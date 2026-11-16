@@ -1,4 +1,4 @@
-# Connecting the React frontend to the Relay Triage backend
+# Connecting the React frontend to the Triagent AI backend
 
 For Musab. The React screens in `frontend/` now run on your backend: `npm run dev:live` uses `frontend/src/api/relay.ts`, which translates your `/api/...` responses. Nothing in `prototype/` was changed. This lists what the adapter covers and what it still can't show.
 

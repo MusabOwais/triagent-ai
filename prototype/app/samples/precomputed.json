@@ -1,5 +1,5 @@
 {
- "_note": "Calibrated probabilities for the held-out demo samples, produced by the trained PTB-XL ResNet and NIH DenseNet and Platt-calibrated. Copied from the team's browser build of Relay Triage. Used only when the .pt weight files are not on this machine.",
+ "_note": "Calibrated probabilities for the held-out demo samples, produced by the trained PTB-XL ResNet and NIH DenseNet and Platt-calibrated. Copied from the team's browser build of Triagent AI. Used only when the .pt weight files are not on this machine.",
  "ecg": {
   "ecg-19669": {
    "NORM": 0.8675660746868568,

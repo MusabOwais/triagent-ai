@@ -6,7 +6,7 @@ React + Vite + TypeScript + Tailwind. Ambulance form, patient view, bed board.
 
 https://relay-triage.vercel.app is the Vercel project `relay-triage`, connected to this repo: every push to `main` redeploys it from `frontend/`.
 
-The hosted build needs no server. The Relay Triage scoring is ported to the browser (`src/api/relayEngine.ts`), with weights and rules exported from the Python code into `src/data/relay.json`. The Yale admission model runs live; ECG and X-ray use the trained models' stored outputs for the 16 demo samples. `npm run check:engine` confirms the port matches the Python backend (160 checks). Each visitor's patients live only in their own browser tab.
+The hosted build needs no server. The Triagent AI scoring is ported to the browser (`src/api/relayEngine.ts`), with weights and rules exported from the Python code into `src/data/relay.json`. The Yale admission model runs live; ECG and X-ray use the trained models' stored outputs for the 16 demo samples. `npm run check:engine` confirms the port matches the Python backend (160 checks). Each visitor's patients live only in their own browser tab.
 
 To run the same build locally: `npm run dev:browser`.
 
@@ -49,7 +49,7 @@ Everything goes through `src/api/`. Nothing else in the app knows where data com
 
 | Command | Data source |
 |---|---|
-| `npm run dev:live` (`VITE_API=relay`) | `src/api/relay.ts`: adapter for the Relay Triage backend in `prototype/` |
+| `npm run dev:live` (`VITE_API=relay`) | `src/api/relay.ts`: adapter for the Triagent AI backend in `prototype/` |
 | `npm run dev` (`VITE_API=mock`) | `src/api/mock.ts`: in-browser store, rules from `docs/CONTRACT.md`, stub models |
 | `VITE_API=contract VITE_API_URL=... npm run dev` | A backend that follows `docs/CONTRACT.md` (A6) exactly |
 

@@ -231,6 +231,12 @@ PROTOCOL ALERTS (not driven by the score)
 GETTING-WORSE ALERT
   Only when NEWS2 rises by 2 or more between two complete sets of vitals, or moves up a band (5–6 urgent, 7+ emergency).
 
-NEWS2 BANDS: 0–4 low · 5–6 medium (urgent review) · 7+ high (emergency). SpO2 scale 1 only.
+NEWS2 BANDS
+  0–4 low · 5–6 medium (urgent review) · 7+ high (emergency). SpO2 scale 1 only.
+
+WHAT THIS DOES NOT DO YET
+  Injury points and bed-type rules are drafts and await clinician review.
+  A score does not create beds. We do not claim shorter waits.
+  No hospital-system integration and no role-based access (HIPAA) yet. All patients shown are fictional.
 
 The three datasets come from different patients. They are combined by these written rules, not by one trained model.`

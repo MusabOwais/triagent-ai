@@ -5,7 +5,7 @@ import type { DemoAssets, PatientView, Strip } from '../api'
 import { cToF, news2Of } from '../api/rules'
 import {
   AlertRow, Btn, Chip, cx, draftHasValues, draftProblems, draftToVitals, emptyDraft, Field, fmtClock, fmtWait,
-  Input, labelOf, Panel, Select, toast, Trend, useLive, useNow, useOptions, VitalsFields,
+  Flaps, Input, labelOf, Lamp, Panel, Select, toast, Trend, useLive, useNow, useOptions, VitalsFields,
 } from '../ui'
 import type { VitalsDraft } from '../ui'
 
@@ -34,8 +34,8 @@ export default function Patient({ id }: { id: string }) {
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <a href="#board" className="text-[14px] font-semibold text-action underline-offset-4 hover:underline">Bed board</a>
-          <h1 className="mt-0.5 text-[26px] font-extrabold tracking-tight">{p.name}</h1>
+          <a href="#board" className="text-[14px] font-semibold text-muted underline underline-offset-4 hover:text-ink">Bed board</a>
+          <h1 className="mt-0.5 text-[44px] font-bold">{p.name}</h1>
           <p className="text-muted">{p.age} y · {p.sex === 'M' ? 'male' : 'female'} · {labelOf(opts?.complaints, p.complaint_category)} · {STATUS[p.status]}{p.arrival_time ? ` · arrived ${fmtWait(s.wait_minutes)} ago` : ''}{p.esi ? ` · ESI ${p.esi}` : ''}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -44,12 +44,14 @@ export default function Patient({ id }: { id: string }) {
         </div>
       </div>
 
+      <Journey v={v} />
+
       {/* Score: the number and the three parts that make it, always together. */}
       {s.strip ? <StripView strip={s.strip} score={s.priority} /> : <section className="grid gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-[220px_repeat(3,minmax(0,1fr))]">
-        <div className="bg-ink p-4 text-white sm:p-5">
-          <div className="text-[14px] font-semibold opacity-80">Bed priority</div>
-          <div className="num text-[64px] font-extrabold leading-none">{s.priority}</div>
-          <div className="num mt-1 text-[14px] opacity-80">({s.parts.A} + {s.parts.B}) ÷ 2 + {s.parts.C}{s.priority === 100 ? ', capped' : ''}</div>
+        <div className="bg-black p-4 sm:p-5">
+          <div className="font-display text-[16px] font-semibold uppercase tracking-[0.08em] text-muted">Bed priority</div>
+          <Flaps value={s.priority} className="mt-1 text-[76px]" />
+          <div className="num mt-2 text-[14px] text-muted">({s.parts.A} + {s.parts.B}) ÷ 2 + {s.parts.C}{s.priority === 100 ? ', capped' : ''}</div>
         </div>
         <Part letter="A" name="Needs a bed" value={`${s.parts.A}%`}>
           Admission model, {s.admission.stage} version.
@@ -67,12 +69,12 @@ export default function Patient({ id }: { id: string }) {
       </section>}
 
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-line bg-surface px-4 py-3">
-        <span className="text-[14px] font-semibold text-muted">Suggested bed</span>
-        <b className="text-[17px]">{bedName(v.bed_type.suggested)}</b>
+        <span className="font-display text-[16px] font-semibold uppercase tracking-[0.08em] text-muted">Suggested bed</span>
+        <b className="font-display text-[26px] font-bold uppercase leading-none tracking-[0.03em]">{bedName(v.bed_type.suggested)}</b>
         <span className="text-muted">{v.bed_type.reason}</span>
         {p.bed_request
           ? <Chip tone="ok">Requested: {bedName(p.bed_request.bed_type)}, confirmed by {p.bed_request.confirmed_by}</Chip>
-          : <span className="ml-auto text-[14px] text-muted">A suggestion only. The charge nurse sends the request from the <a className="font-semibold text-action underline" href="#board">bed board</a>.</span>}
+          : <span className="ml-auto text-[14px] text-muted">A suggestion only. The charge nurse sends the request from the <a className="font-semibold text-ink underline" href="#board">bed board</a>.</span>}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
@@ -110,10 +112,35 @@ export default function Patient({ id }: { id: string }) {
   )
 }
 
+/** The patient's route as five fixed stops. A filled lamp is done, the yellow one is next. */
+function Journey({ v }: { v: PatientView }) {
+  const p = v.patient, amb = [...p.vitals].sort((a, b) => a.time.localeCompare(b.time))[0]
+  const t = (iso?: string | null) => (iso ? fmtClock(iso) : '')
+  const stops = [
+    { name: 'Ambulance', short: 'Amb', done: true, time: t(amb?.time) },
+    { name: 'ER door', short: 'Door', done: !!p.arrival_time, time: t(p.arrival_time) },
+    { name: 'ECG', short: 'ECG', done: !!p.ecg, time: t(p.ecg?.time) },
+    { name: 'Chest X-ray', short: 'X-ray', done: !!p.xray, time: t(p.xray?.time) },
+    { name: 'Bed', short: 'Bed', done: !!p.bed_request, time: p.bed_request ? 'requested' : '' },
+  ]
+  const next = stops.findIndex(s => !s.done)
+  return (
+    <ol className="grid grid-cols-5 rounded-[4px] border border-line bg-surface" aria-label="Patient journey">
+      {stops.map((s, i) => (
+        <li key={s.name} className={cx('relative min-w-0 px-1 py-3 text-center sm:px-4', i > 0 && 'border-l border-line', i === next && 'bg-action/10')}>
+          <div className={cx('flex items-center justify-center gap-2 font-display text-[15px] font-semibold uppercase tracking-[0.06em] sm:text-[18px]', i === next ? 'text-action' : s.done ? 'text-ink' : 'text-muted')}>
+            <Lamp on={s.done} /><span className="sm:hidden">{s.short}</span><span className="hidden truncate sm:inline">{s.name}</span>
+          </div>
+          <div className="num mt-0.5 text-[13px] text-muted">{s.done ? s.time || 'done' : i === next ? 'next' : 'waiting'}</div>
+        </li>))}
+    </ol>
+  )
+}
+
 function Part({ letter, name, value, sub, children }: { letter: string; name: string; value: ReactNode; sub?: string; children: ReactNode }) {
   return (
     <div className="min-w-0 bg-surface p-4 sm:p-5">
-      <div className="text-[14px] font-semibold text-muted"><span className="num mr-1.5 text-ink">{letter}</span>{name}</div>
+      <div className="font-display text-[16px] font-semibold uppercase tracking-[0.08em] text-muted"><span className="num mr-1.5 text-ink">{letter}</span>{name}</div>
       <div className="num mt-0.5 flex items-baseline gap-2 text-[34px] font-extrabold leading-tight">{value}{sub && <span className="text-[14px] font-semibold text-muted">{sub}</span>}</div>
       <div className="mt-1 text-[14px] text-muted">{children}</div>
     </div>
@@ -203,7 +230,7 @@ function Diag({ kind, v, assets, disabled, onRun, onReview }: {
               <div className="mb-1 text-[14px] font-semibold">Choose a held-out demo X-ray</div>
               <div className="grid grid-cols-4 gap-2">{(assets?.xrays ?? []).map(x => (
                 <button key={x.id} type="button" disabled={disabled} aria-label={x.label} aria-pressed={chosen === x.id} onClick={() => setPick(x.id)}
-                  className={cx('overflow-hidden rounded-md border-2 bg-ink disabled:opacity-50', chosen === x.id ? 'border-action' : 'border-transparent')}>
+                  className={cx('overflow-hidden rounded-[3px] border-2 bg-black disabled:opacity-50', chosen === x.id ? 'border-action' : 'border-transparent')}>
                   <img src={x.image_url} alt="" className="aspect-square w-full object-cover" /></button>))}</div>
             </div>
           ) : (
@@ -223,11 +250,11 @@ function Diag({ kind, v, assets, disabled, onRun, onReview }: {
           </div>
           {kind === 'ecg' && sampleId && <EcgTrace id={sampleId} />}
           <div className={cx(sample?.image_url && 'grid grid-cols-[96px_minmax(0,1fr)] items-start gap-3')}>
-            {sample?.image_url && <img src={sample.image_url} alt="Chest X-ray sample" className="aspect-square w-full rounded-md bg-ink object-cover" />}
+            {sample?.image_url && <img src={sample.image_url} alt="Chest X-ray sample" className="aspect-square w-full rounded-[3px] bg-black object-cover" />}
             <div className="flex flex-col gap-1.5">{bars.map(([k, x, hot]) => <Bar key={k} label={k} p={x} hot={hot} />)}</div>
           </div>
           {res?.effect && <p className="num text-[15px] font-semibold">{res.effect}</p>}
-          <p className="text-[14px] text-muted">AI flag, not a diagnosis. Model: {res?.model === 'stub' ? 'stub (fixed demo output, no measured accuracy)' : res?.model}. <a className="font-semibold text-action underline" href="#board">How it was measured is on the bed board</a>.</p>
+          <p className="text-[14px] text-muted">AI flag, not a diagnosis. Model: {res?.model === 'stub' ? 'stub (fixed demo output, no measured accuracy)' : res?.model}. <a className="font-semibold text-ink underline" href="#how">How it was measured</a>.</p>
           {sample?.truth && <p className="rounded-md bg-sunk px-3 py-2 text-[14px]">Demo transparency: the expert label for this held-out sample is <b>{sample.truth.join(', ')}</b>.</p>}
           {!flagged && api.can.review && <p className="text-[14px] text-muted">A clear AI result adds nothing and takes nothing off the score.</p>}
           {flagged && api.can.review && !review && !reviewing && (
@@ -279,14 +306,14 @@ function EcgTrace({ id }: { id: string }) {
 function StripView({ strip, score }: { strip: Strip; score: number }) {
   return (
     <section className="grid gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-[220px_repeat(3,minmax(0,1fr))]">
-      <div className="bg-ink p-4 text-white sm:p-5">
-        <div className="text-[14px] font-semibold opacity-80">{strip.title}</div>
-        <div className="num text-[64px] font-extrabold leading-none">{score}</div>
-        <div className="num mt-1 text-[14px] opacity-80">{strip.formula}</div>
+      <div className="bg-black p-4 sm:p-5">
+        <div className="font-display text-[16px] font-semibold uppercase tracking-[0.08em] text-muted">{strip.title}</div>
+        <Flaps value={score} className="mt-1 text-[76px]" />
+        <div className="num mt-2 text-[14px] text-muted">{strip.formula}</div>
       </div>
       {strip.cells.map(c => (
         <div key={c.name} className="min-w-0 bg-surface p-4 sm:p-5">
-          <div className="text-[14px] font-semibold text-muted">{c.name}</div>
+          <div className="font-display text-[16px] font-semibold uppercase tracking-[0.08em] text-muted">{c.name}</div>
           <div className="num mt-0.5 flex items-baseline gap-2 text-[34px] font-extrabold leading-tight"><span className={c.tone && bandText[c.tone]}>{c.value}</span>{c.sub && <span className="text-[14px] font-semibold text-muted">{c.sub}</span>}</div>
           <ul className="num mt-1 flex flex-col gap-0.5 text-[14px]">{c.lines.map(l => <li key={l}>{l}</li>)}</ul>
           {c.note && <p className="mt-1 text-[13px] text-muted">{c.note}</p>}
@@ -314,7 +341,7 @@ function Handoff({ v }: { v: PatientView }) {
       <div className="mb-3 flex flex-wrap items-center gap-2" role="tablist">
         {(['sbar', 'mist'] as const).map(t => (
           <button key={t} type="button" role="tab" aria-selected={tab === t} onClick={() => setTab(t)}
-            className={cx('min-h-10 rounded-md px-3 text-[15px] font-semibold', tab === t ? 'bg-ink text-white' : 'border border-line hover:bg-sunk')}>
+            className={cx('min-h-10 rounded-[3px] px-3 font-display text-[17px] font-semibold uppercase tracking-[0.05em]', tab === t ? 'bg-ink text-page' : 'border border-[#4a5157] hover:bg-sunk')}>
             {t === 'sbar' ? 'SBAR · for the floor nurse' : 'MIST · from the ambulance'}
           </button>))}
         <Btn className="ml-auto min-h-10" onClick={copy}>Copy</Btn>

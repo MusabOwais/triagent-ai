@@ -118,7 +118,7 @@ def log(p, kind, text, dL=0.0):
                         "L": round(p["L"], 3)})
 
 # ---------------- API ----------------
-app = FastAPI(title="Triage PoC")
+app = FastAPI(title="Triagent AI")
 
 @app.get("/api/meta")
 def meta():

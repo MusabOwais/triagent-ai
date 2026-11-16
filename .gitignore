@@ -18,7 +18,7 @@ records500/
 ml/**/images/
 !ml/demo_assets/**
 
-# The two trained models the Relay Triage demo needs (ECG and chest X-ray). Small enough to commit.
+# The two trained models the Triagent AI demo needs (ECG and chest X-ray). Small enough to commit.
 !prototype/outputs/ecg_resnet1d.pt
 !prototype/outputs/cxr_densenet121.pt
 
@@ -44,3 +44,6 @@ dist/
 .vscode/
 .vercel
 .env*
+
+# Design tooling state
+.impeccable/

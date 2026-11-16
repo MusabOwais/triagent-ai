@@ -9,10 +9,10 @@ export const cx = (...a: (string | false | null | undefined)[]) => a.filter(Bool
 
 export function Panel({ title, aside, children, className }: { title?: ReactNode; aside?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={cx('rounded-lg border border-line bg-surface p-4 sm:p-5', className)}>
+    <section className={cx('rounded-[4px] border border-line bg-surface p-4 sm:p-5', className)}>
       {(title || aside) && (
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          {title && <h2 className="text-[17px] font-bold">{title}</h2>}
+          {title && <h2 className="font-display text-[20px] font-semibold uppercase leading-tight tracking-[0.06em]">{title}</h2>}
           {aside && <div className="text-sm text-muted">{aside}</div>}
         </div>
       )}
@@ -28,10 +28,10 @@ export function Btn({ kind = 'secondary', busy, className, children, disabled, .
       type="button"
       disabled={disabled || busy}
       className={cx(
-        'inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 text-[15px] font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50',
-        kind === 'primary' && 'bg-action text-white hover:bg-action-hover',
-        kind === 'secondary' && 'border border-line bg-surface text-ink hover:bg-sunk',
-        kind === 'quiet' && 'text-action underline-offset-4 hover:underline px-2',
+        'inline-flex min-h-11 items-center justify-center gap-2 rounded-[3px] px-4 font-display text-[17px] font-semibold uppercase tracking-[0.05em] transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-45',
+        kind === 'primary' && 'bg-action text-black hover:bg-action-hover',
+        kind === 'secondary' && 'border border-[#4a5157] bg-transparent text-ink hover:bg-sunk',
+        kind === 'quiet' && 'text-muted underline underline-offset-4 hover:text-ink px-2',
         className,
       )}
       {...rest}
@@ -44,12 +44,12 @@ export function Btn({ kind = 'secondary', busy, className, children, disabled, .
 export function Chip({ tone = 'neutral', children }: { tone?: 'neutral' | 'ok' | 'warn' | 'crit' | 'info'; children: ReactNode }) {
   const tones = {
     neutral: 'bg-sunk text-muted border-line',
-    info: 'bg-[#e6ecf7] text-action border-[#c4d1ea]',
+    info: 'bg-info-bg text-info border-transparent',
     ok: 'bg-ok-bg text-ok border-transparent',
     warn: 'bg-warn-bg text-warn border-transparent',
     crit: 'bg-crit-bg text-crit border-transparent',
   }
-  return <span className={cx('inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[13px] font-semibold', tones[tone])}>{children}</span>
+  return <span className={cx('inline-flex items-center gap-1.5 whitespace-nowrap rounded-[3px] border px-2 py-0.5 font-display text-[15px] font-semibold uppercase tracking-[0.05em]', tones[tone])}>{children}</span>
 }
 
 export function Trend({ dir }: { dir: News2['trend'] }) {
@@ -79,6 +79,14 @@ export function News2Pill({ n }: { n: News2 }) {
 
 export const fmtWait = (m: number) => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${m % 60} min`)
 export const fmtClock = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+/** A number on split-flap tiles. Each tile is keyed by its character, so it flips when the value changes. */
+export function Flaps({ value, className }: { value: number | string; className?: string }) {
+  const chars = String(value).split('')
+  return <span className={cx('flaps', className)} aria-label={String(value)} role="img">{chars.map((c, i) => <span key={`${i}-${c}`} className="flap" aria-hidden="true">{c}</span>)}</span>
+}
+export const Lamp = ({ on, tone }: { on: boolean; tone?: 'ok' | 'warn' | 'crit' }) =>
+  <span className={cx('lamp', tone === 'ok' && 'text-ok', tone === 'warn' && 'text-warn', tone === 'crit' && 'text-crit')} data-on={on} aria-hidden="true" />
 
 // ---------- hooks ----------
 export function useNow(ms = 1000) {
@@ -117,7 +125,7 @@ export function Toaster() {
   useEffect(() => { let t: ReturnType<typeof setTimeout>; pushToast = m => { setMsg(m); clearTimeout(t); t = setTimeout(() => setMsg(null), 3500) } }, [])
   return (
     <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-4">
-      {msg && <div className="rounded-md bg-ink px-4 py-2.5 text-[15px] font-medium text-white shadow-[0_6px_20px_rgba(18,32,44,0.25)]">{msg}</div>}
+      {msg && <div className="rounded-[3px] bg-ink px-4 py-2.5 text-[15px] font-semibold text-page shadow-[0_8px_24px_rgba(0,0,0,0.55)]">{msg}</div>}
     </div>
   )
 }
@@ -132,8 +140,8 @@ export function AlertRow({ a, now }: { a: Alert; now: number }) {
   }
   const crit = a.level === 'critical'
   return (
-    <div className={cx('flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-md px-4 py-2.5 text-[15px] font-semibold', crit ? 'bg-crit-bg text-crit' : 'bg-warn-bg text-warn')}>
-      <span><span className="mr-2 text-[12px] font-bold uppercase tracking-wider">{a.kind === 'protocol' ? 'Protocol' : 'Getting worse'}</span>{a.message}</span>
+    <div className={cx('flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-[3px] px-4 py-2.5 font-display text-[19px] font-semibold uppercase tracking-[0.04em]', crit ? 'bg-crit text-black' : a.kind === 'protocol' ? 'bg-action text-black' : 'bg-warn text-black')}>
+      <span><span className="mr-3 opacity-70">{a.kind === 'protocol' ? 'Next' : 'Getting worse'}</span>{a.message}</span>
       {extra}
     </div>
   )
@@ -162,10 +170,10 @@ export function draftToVitals(d: VitalsDraft, source: Vitals['source']): Vitals 
   }
 }
 
-const inputCls = 'h-11 w-full rounded-md border border-line bg-surface px-3 text-[16px] text-ink placeholder:text-muted/70'
+const inputCls = 'h-11 w-full rounded-[3px] border border-[#3d4449] bg-page px-3 text-[16px] text-ink placeholder:text-muted/60'
 export function Field({ label, unit, hint, error, children }: { label: string; unit?: string; hint?: string; error?: string; children: ReactNode }) {
   return (
-    <label className="flex min-w-0 flex-col gap-1 text-[14px] font-semibold text-ink">
+    <label className="flex min-w-0 flex-col gap-1 text-[14px] font-semibold text-muted">
       <span>{label}{unit && <span className="ml-1 font-normal text-muted">{unit}</span>}</span>
       {children}
       {error ? <span className="text-[13px] font-semibold text-crit">{error}</span> : hint ? <span className="text-[13px] font-normal text-muted">{hint}</span> : null}

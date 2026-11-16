@@ -1,6 +1,6 @@
 # Formulas
 
-Every formula used by Relay Triage. The code is `app/scoring.py`; the Model A/B weights below are generated from `outputs/vitals_scorecard.json`, the file the code reads.
+Every formula used by Triagent AI. The code is `app/scoring.py`; the Model A/B weights below are generated from `outputs/vitals_scorecard.json`, the file the code reads.
 
 ## 0. Score conversion (used at every stage)
 

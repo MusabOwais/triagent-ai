@@ -1,4 +1,4 @@
-# HackRx: ambulance-to-bed handoff
+# Triagent AI
 
 **Live demo: https://relay-triage.vercel.app** (runs in the browser; each visitor gets a private copy, **Reset demo** restores the example patients)
 

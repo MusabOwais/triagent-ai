@@ -1,4 +1,4 @@
-// The Relay Triage backend, ported to run in the browser so the app can be hosted as a static site.
+// The Triagent AI backend, ported to run in the browser so the app can be hosted as a static site.
 // A line-for-line port of prototype/app/scoring.py and the endpoints of prototype/app/server.py.
 // Every weight comes from src/data/relay.json, which is generated from the Python code and model
 // outputs; nothing is retyped here. ECG and X-ray use the trained models' stored outputs.
