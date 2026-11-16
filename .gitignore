@@ -1,0 +1,40 @@
+# Data and model files (too big or not ours to redistribute)
+ml/data/
+ml/artifacts/
+*.csv
+*.rdata
+*.RData
+*.parquet
+*.dat
+*.hea
+*.pt
+*.pth
+*.joblib
+*.pkl
+*.h5
+*.zip
+records100/
+records500/
+ml/**/images/
+!ml/demo_assets/**
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Secrets and local files
+.env
+.env.*
+!.env.example
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,213 @@
+<title>HackRx Team Prompts</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single working column — fill-ins on top, three role selectors, then the chosen prompt with its copy button. */
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --fg: #16202a;
+  --muted: #5a6876;
+  --line: #d9e0e7;
+  --accent: #0b5cad;
+  --accent-ink: #ffffff;
+  --mark-bg: #fff1c2;
+  --mark-fg: #5a4300;
+  --ok: #1f7a4a;
+  --r1: #6b4fd8;
+  --r2: #0b7d86;
+  --r3: #c2571a;
+  --font-display: "Public Sans", system-ui, sans-serif;
+  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f151b; --surface: #17202a; --fg: #e4eaf0; --muted: #9aa8b6; --line: #2a3643;
+    --accent: #5aa6f0; --accent-ink: #08131e; --mark-bg: #4a3b0a; --mark-fg: #ffe08a; --ok: #5cc98e;
+    --r1: #a592ff; --r2: #4cc6cf; --r3: #f2955a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f151b; --surface: #17202a; --fg: #e4eaf0; --muted: #9aa8b6; --line: #2a3643;
+  --accent: #5aa6f0; --accent-ink: #08131e; --mark-bg: #4a3b0a; --mark-fg: #ffe08a; --ok: #5cc98e;
+  --r1: #a592ff; --r2: #4cc6cf; --r3: #f2955a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 28px; }
+header { display: grid; gap: 8px; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 38px); font-weight: 800; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-size: 17px; font-weight: 700; margin: 0; }
+.lede { margin: 0; max-width: 68ch; color: var(--muted); }
+.lede strong { color: var(--fg); font-weight: 600; }
+
+.fill { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; }
+.fill-head { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between; }
+.fill-head p { margin: 0; color: var(--muted); font-size: 13px; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.field input { font: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); width: 100%; }
+.field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.role {
+  text-align: left; font: inherit; color: inherit; cursor: pointer; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 6px; align-content: start;
+  border-top: 4px solid var(--rc);
+}
+.role:hover { border-color: var(--rc); }
+.role:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.role[aria-selected="true"] { box-shadow: 0 0 0 2px var(--rc); }
+.role .tag { font-family: var(--font-mono); font-size: 12px; color: var(--rc); font-weight: 500; }
+.role .name { font-weight: 700; font-size: 16px; }
+.role .owns { color: var(--muted); font-size: 13px; }
+
+.panel { display: grid; gap: 16px; }
+.panel-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.panel-head .meta { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.deliver { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px 24px; margin: 0; padding: 0; list-style: none; }
+.deliver li { padding-left: 14px; position: relative; font-size: 14px; }
+.deliver li::before { content: ""; position: absolute; left: 0; top: .62em; width: 6px; height: 6px; border-radius: 50%; background: var(--rc); }
+.btn {
+  font: inherit; font-weight: 600; font-size: 14px; border: 0; border-radius: 8px; padding: 10px 16px; cursor: pointer;
+  background: var(--accent); color: var(--accent-ink); display: inline-flex; gap: 8px; align-items: center;
+}
+.btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.btn.done { background: var(--ok); }
+.prompt {
+  margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px;
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; white-space: pre-wrap; word-break: break-word;
+  max-height: 70vh; overflow: auto; min-width: 0;
+}
+.prompt mark { background: var(--mark-bg); color: var(--mark-fg); border-radius: 3px; padding: 0 2px; }
+.prompt .filled { background: transparent; color: var(--ok); font-weight: 500; }
+.note { font-size: 13px; color: var(--muted); margin: 0; max-width: 75ch; }
+.note code { font-family: var(--font-mono); font-size: 12px; }
+@media (prefers-reduced-motion: no-preference) { .btn, .role { transition: background .15s, box-shadow .15s, border-color .15s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SacHacks HackRx · Clinical Impact track</div>
+    <h1>HackRx Team Prompts</h1>
+    <p class="lede">Three master prompts, one per teammate, for the ambulance-to-bed handoff app. Each one is self-contained: paste it into a <strong>new</strong> Claude chat and it starts by giving full feedback on the plan, then builds. Part A (the team brief and shared data contract) is identical in all three, so everyone builds to the same spec.</p>
+  </header>
+
+  <section class="fill" aria-labelledby="fill-title">
+    <div class="fill-head">
+      <h2 id="fill-title">Fill in before copying</h2>
+      <p>These go into all three prompts. Blank fields stay highlighted.</p>
+    </div>
+    <div class="fields">
+      <div class="field"><label for="f-deadline">Submission deadline</label><input id="f-deadline" data-key="[DEADLINE]" placeholder="e.g. 6:00 pm today"></div>
+      <div class="field"><label for="f-r1">Role 1 (ML) name</label><input id="f-r1" data-key="[ROLE 1 NAME]" placeholder="Name"></div>
+      <div class="field"><label for="f-r2">Role 2 (backend) name</label><input id="f-r2" data-key="[ROLE 2 NAME]" placeholder="Name"></div>
+      <div class="field"><label for="f-r3">Role 3 (frontend) name</label><input id="f-r3" data-key="[ROLE 3 NAME]" placeholder="Name"></div>
+      <div class="field"><label for="f-keys">AI API keys available</label><input id="f-keys" data-key="[KEYS]" placeholder="e.g. Anthropic, OpenAI"></div>
+    </div>
+    <p class="note">Type the provider names only, never the keys themselves.</p>
+  </section>
+
+  <div class="roles" role="tablist" aria-label="Team roles" id="roles"></div>
+
+  <section class="panel" id="panel" role="tabpanel">
+    <div class="panel-head">
+      <h2 id="panel-title"></h2>
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <span class="meta" id="panel-meta"></span>
+        <button class="btn" id="copy" type="button">Copy prompt</button>
+      </div>
+    </div>
+    <ul class="deliver" id="panel-deliver"></ul>
+    <pre class="prompt" id="prompt" tabindex="0"></pre>
+  </section>
+</div>
+
+<script>
+const PROMPTS = __PROMPTS_JSON__;
+const ROLES = [
+  { key: "r1", tag: "ROLE 1", name: "ML engineer", color: "var(--r1)",
+    owns: "Yale admission model, PTB-XL ECG flag, NIH X-ray flag, measured accuracy.",
+    deliver: ["predict_admission() with ambulance and triage versions", "flag_ecg() trained on PTB-XL folds 1–8, tested on fold 10", "flag_xray() with a CheXpert-trained model tested on NIH", "metrics.json with real measured AUCs", "Demo ECGs and X-rays for the story"] },
+  { key: "r2", tag: "ROLE 2", name: "Backend and clinical logic", color: "var(--r2)",
+    owns: "FastAPI, patient record, NEWS2, bed-priority score, rules, alerts, handoff summaries.",
+    deliver: ["Every API endpoint live with ML stubs in the first 45 min", "NEWS2 and the A + B + C priority score, raise-only enforced", "Bed-type rules, ECG countdown, deterioration alerts", "Template MIST and SBAR handoff summaries", "Six fictional seed patients and a pytest suite"] },
+  { key: "r3", tag: "ROLE 3", name: "Frontend, demo and pitch", color: "var(--r3)",
+    owns: "Ambulance form, patient view, bed board, live demo, slides, Devpost, fact-checking.",
+    deliver: ["Ambulance form that works on a phone", "Patient view with the three score parts always visible", "Bed board with the nurse-confirmed bed request", "2-minute demo script and 3-minute pitch", "Verified stats, organizer and mentor questions answered"] }
+];
+
+const inputs = [...document.querySelectorAll(".field input")];
+const STORE = "hackrx-prompt-fills";
+try { const saved = JSON.parse(localStorage.getItem(STORE) || "{}"); inputs.forEach(i => { if (saved[i.id]) i.value = saved[i.id]; }); } catch (e) {}
+
+let current = 0;
+try { const t = localStorage.getItem(STORE + "-tab"); if (t !== null && ROLES[+t]) current = +t; } catch (e) {}
+
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const fills = () => Object.fromEntries(inputs.map(i => [i.dataset.key, i.value.trim()]));
+
+function filledText(key) {
+  let t = PROMPTS[key];
+  for (const [k, v] of Object.entries(fills())) if (v) t = t.split(k).join(v);
+  return t;
+}
+function renderPrompt() {
+  const key = ROLES[current].key;
+  let html = esc(PROMPTS[key]);
+  for (const [k, v] of Object.entries(fills())) {
+    const ek = esc(k);
+    html = html.split(ek).join(v ? `<mark class="filled">${esc(v)}</mark>` : `<mark>${ek}</mark>`);
+  }
+  document.getElementById("prompt").innerHTML = html;
+  const words = PROMPTS[key].split(/\s+/).filter(Boolean).length;
+  document.getElementById("panel-meta").textContent = `≈ ${words.toLocaleString()} words`;
+}
+function renderRoles() {
+  const box = document.getElementById("roles");
+  box.innerHTML = "";
+  ROLES.forEach((r, i) => {
+    const b = document.createElement("button");
+    b.className = "role"; b.type = "button"; b.id = "tab-" + r.key;
+    b.setAttribute("role", "tab"); b.setAttribute("aria-selected", i === current ? "true" : "false");
+    b.setAttribute("aria-controls", "panel"); b.style.setProperty("--rc", r.color);
+    b.innerHTML = `<span class="tag">${r.tag}</span><span class="name">${esc(r.name)}</span><span class="owns">${esc(r.owns)}</span>`;
+    b.addEventListener("click", () => { current = i; try { localStorage.setItem(STORE + "-tab", String(i)); } catch (e) {} render(); });
+    box.appendChild(b);
+  });
+}
+function render() {
+  const r = ROLES[current];
+  renderRoles();
+  const panel = document.getElementById("panel");
+  panel.style.setProperty("--rc", r.color);
+  panel.setAttribute("aria-labelledby", "tab-" + r.key);
+  document.getElementById("panel-title").textContent = `${r.tag} · ${r.name} — what this person delivers`;
+  document.getElementById("panel-deliver").innerHTML = r.deliver.map(d => `<li>${esc(d)}</li>`).join("");
+  const c = document.getElementById("copy"); c.textContent = `Copy ${r.tag.toLowerCase().replace("role", "Role")} prompt`; c.classList.remove("done");
+  renderPrompt();
+}
+inputs.forEach(i => i.addEventListener("input", () => {
+  try { localStorage.setItem(STORE, JSON.stringify(Object.fromEntries(inputs.map(x => [x.id, x.value])))); } catch (e) {}
+  renderPrompt();
+}));
+document.getElementById("copy").addEventListener("click", async (ev) => {
+  const btn = ev.currentTarget; const text = filledText(ROLES[current].key);
+  try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; btn.classList.add("done"); }
+  catch (e) {
+    const sel = window.getSelection(); const range = document.createRange();
+    range.selectNodeContents(document.getElementById("prompt")); sel.removeAllRanges(); sel.addRange(range);
+    btn.textContent = "Selected — press Cmd+C";
+  }
+  setTimeout(() => { btn.textContent = `Copy ${ROLES[current].tag.toLowerCase().replace("role", "Role")} prompt`; btn.classList.remove("done"); }, 2200);
+});
+render();
+</script>
