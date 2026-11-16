@@ -49,6 +49,9 @@ MISSING = "Model weights not found in outputs/. Run src/ecg_train.py and src/cxr
 MEAN = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1); STD = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
 
 MANIFEST = json.loads((APP / "samples/manifest.json").read_text())
+# Calibrated model outputs for the demo samples, stored so the demo still runs on a machine without the .pt weights.
+_pre = APP / "samples/precomputed.json"
+PRE = json.loads(_pre.read_text()) if _pre.exists() else {"ecg": {}, "cxr": {}}
 ECG_BANK = np.load(APP / "samples/ecg.npz")
 ECG_BY_ID = {f"ecg-{int(i)}": ECG_BANK["x"][k] for k, i in enumerate(ECG_BANK["ids"])}
 METRICS = {k: json.loads((ROOT / f"outputs/{f}").read_text()) for k, f in
@@ -123,6 +126,7 @@ def meta():
             "rhythms": [{"id": k, "label": v} for k, v in S.RHYTHM_LABEL.items()],
             "injuries": list(S.OVERLAY["injury"].keys()), "beds": S.BEDS, "samples": MANIFEST,
             "models_loaded": {"ecg": ecg_model is not None, "xray": cxr_model is not None},
+            "precomputed": {"ecg": bool(PRE["ecg"]), "xray": bool(PRE["cxr"])},
             "metrics": {"model_b_auroc": METRICS["scorecard"]["B_vitals_plus_complaint"]["test_auroc"],
                         "model_a_auroc": METRICS["scorecard"]["A_vitals_only"]["test_auroc"],
                         "ecg_auroc": round(METRICS["ecg"]["test_macro_auroc"], 3),
@@ -160,8 +164,8 @@ def arrive(pid: str, minutes_ago: float = 0):
 class Diag(BaseModel):
     sample_id: str
 
-def apply_ecg(p, probs, source):
-    pc = S.calibrate("ecg", probs); d = S.ecg_delta(pc)
+def apply_ecg(p, probs, source, calibrated=False):
+    pc = probs if calibrated else S.calibrate("ecg", probs); d = S.ecg_delta(pc)
     p["L"] += d["delta"]; raw = S.to_score(p["L"]); p["score"] = max(raw, p["floor"])
     old_bed = p["bed"]["type"]; nb, why = S.bed_after_ecg(old_bed, pc)
     p["ecg"] = {"source": source, "probs": pc, **d}
@@ -172,8 +176,8 @@ def apply_ecg(p, probs, source):
         p["bed"].update(type=nb, status="provisional", reason=why)  # waiting time carries over
         log(p, "bed", f"Bed waitlist changed: {old_bed} to {nb} ({why}). Waiting time kept.")
 
-def apply_cxr(p, probs, source):
-    pc = S.calibrate("cxr", probs); d = S.cxr_delta(pc)
+def apply_cxr(p, probs, source, calibrated=False):
+    pc = probs if calibrated else S.calibrate("cxr", probs); d = S.cxr_delta(pc)
     p["L"] += d["delta"]; raw = S.to_score(p["L"]); p["score"] = max(raw, p["floor"])
     p["xray"] = {"source": source, "probs": pc, **d}
     p["queue"].pop("xray", None)
@@ -183,18 +187,20 @@ def apply_cxr(p, probs, source):
 @app.post("/api/patients/{pid}/ecg")
 def ecg(pid: str, body: Diag):
     p = get(pid)
-    if ecg_model is None: raise HTTPException(503, MISSING)
     if body.sample_id not in ECG_BY_ID: raise HTTPException(404, "Unknown ECG sample.")
-    apply_ecg(p, run_ecg(ECG_BY_ID[body.sample_id]), body.sample_id)
+    if ecg_model is not None: apply_ecg(p, run_ecg(ECG_BY_ID[body.sample_id]), body.sample_id)
+    elif body.sample_id in PRE["ecg"]: apply_ecg(p, PRE["ecg"][body.sample_id], body.sample_id, calibrated=True)
+    else: raise HTTPException(503, MISSING)
     return view(p)
 
 @app.post("/api/patients/{pid}/xray")
 def xray(pid: str, body: Diag):
     p = get(pid)
-    if cxr_model is None: raise HTTPException(503, MISSING)
     s = next((c for c in MANIFEST["cxr"] if c["id"] == body.sample_id), None)
     if not s: raise HTTPException(404, "Unknown X-ray sample.")
-    apply_cxr(p, run_cxr(Image.open(APP / "samples/cxr" / s["file"])), body.sample_id)
+    if cxr_model is not None: apply_cxr(p, run_cxr(Image.open(APP / "samples/cxr" / s["file"])), body.sample_id)
+    elif body.sample_id in PRE["cxr"]: apply_cxr(p, PRE["cxr"][body.sample_id], body.sample_id, calibrated=True)
+    else: raise HTTPException(503, MISSING)
     return view(p)
 
 @app.post("/api/patients/{pid}/xray-upload")
