@@ -1,6 +1,6 @@
 # Triagent AI
 
-**Live demo: https://relay-triage.vercel.app** (runs in the browser; each visitor gets a private copy, **Reset demo** restores the example patients)
+**Live demo: https://triagent-ai.vercel.app** (runs in the browser; each visitor gets a private copy, **Reset demo** restores the example patients)
 
 Built at SacHacks HackRx (UC Davis Betty Irene Moore School of Nursing), for the **Best Clinical Impact** track.
 
