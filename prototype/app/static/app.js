@@ -246,6 +246,8 @@ function diagPanel(p, kind) {
       ${res.note ? `<p class="small" style="margin:0">${esc(res.note)}</p>` : ""}
       ${truth ? `<div class="truth">Demo transparency: the expert label for this held-out sample is <b>${esc(truth.join(", "))}</b>. The model has not seen it.</div>` : ""}</section>`;
   }
+  if (META.models_loaded && !META.models_loaded[kind]) return `<section class="panel stack"><h2>${name}</h2>
+    <p class="small" style="margin:0">The ${kind === "ecg" ? "ECG" : "X-ray"} model weights are not on this machine, so this step is unavailable. See the README to add them.</p></section>`;
   const ordered = p.queues[kind];
   const samples = META.samples[kind === "ecg" ? "ecg" : "cxr"];
   const pick = kind === "ecg"

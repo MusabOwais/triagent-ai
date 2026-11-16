@@ -12,3 +12,4 @@ wfdb
 matplotlib
 torch
 torchvision
+pytest

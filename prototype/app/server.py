@@ -32,13 +32,20 @@ class ResNet1d(nn.Module):
         s.h = nn.Linear(256, n)
     def forward(s, x): return s.h(s.f(x))
 
-ecg_ck = torch.load(ROOT / "outputs/ecg_resnet1d.pt", map_location="cpu", weights_only=False)
-ECG_CLASSES = ecg_ck["classes"]
-ecg_model = ResNet1d(); ecg_model.load_state_dict(ecg_ck["state"]); ecg_model.eval()
-cxr_ck = torch.load(ROOT / "outputs/cxr_densenet121.pt", map_location="cpu", weights_only=False)
-CXR_CLASSES = cxr_ck["classes"]
-cxr_model = torchvision.models.densenet121(); cxr_model.classifier = nn.Linear(1024, len(CXR_CLASSES))
-cxr_model.load_state_dict(cxr_ck["state"]); cxr_model.eval()
+def _load(name):
+    f = ROOT / "outputs" / name
+    return torch.load(f, map_location="cpu", weights_only=False) if f.exists() else None
+
+ecg_ck, cxr_ck = _load("ecg_resnet1d.pt"), _load("cxr_densenet121.pt")
+ecg_model = cxr_model = None
+if ecg_ck:
+    ECG_CLASSES = ecg_ck["classes"]
+    ecg_model = ResNet1d(); ecg_model.load_state_dict(ecg_ck["state"]); ecg_model.eval()
+if cxr_ck:
+    CXR_CLASSES = cxr_ck["classes"]
+    cxr_model = torchvision.models.densenet121(); cxr_model.classifier = nn.Linear(1024, len(CXR_CLASSES))
+    cxr_model.load_state_dict(cxr_ck["state"]); cxr_model.eval()
+MISSING = "Model weights not found in outputs/. Run src/ecg_train.py and src/cxr_train.py, or copy the .pt files in (see README)."
 MEAN = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1); STD = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
 
 MANIFEST = json.loads((APP / "samples/manifest.json").read_text())
@@ -115,6 +122,7 @@ def meta():
     return {"complaints": [{"id": c, "label": S.pretty_cc(c)} for c in S.COMPLAINTS],
             "rhythms": [{"id": k, "label": v} for k, v in S.RHYTHM_LABEL.items()],
             "injuries": list(S.OVERLAY["injury"].keys()), "beds": S.BEDS, "samples": MANIFEST,
+            "models_loaded": {"ecg": ecg_model is not None, "xray": cxr_model is not None},
             "metrics": {"model_b_auroc": METRICS["scorecard"]["B_vitals_plus_complaint"]["test_auroc"],
                         "model_a_auroc": METRICS["scorecard"]["A_vitals_only"]["test_auroc"],
                         "ecg_auroc": round(METRICS["ecg"]["test_macro_auroc"], 3),
@@ -175,6 +183,7 @@ def apply_cxr(p, probs, source):
 @app.post("/api/patients/{pid}/ecg")
 def ecg(pid: str, body: Diag):
     p = get(pid)
+    if ecg_model is None: raise HTTPException(503, MISSING)
     if body.sample_id not in ECG_BY_ID: raise HTTPException(404, "Unknown ECG sample.")
     apply_ecg(p, run_ecg(ECG_BY_ID[body.sample_id]), body.sample_id)
     return view(p)
@@ -182,6 +191,7 @@ def ecg(pid: str, body: Diag):
 @app.post("/api/patients/{pid}/xray")
 def xray(pid: str, body: Diag):
     p = get(pid)
+    if cxr_model is None: raise HTTPException(503, MISSING)
     s = next((c for c in MANIFEST["cxr"] if c["id"] == body.sample_id), None)
     if not s: raise HTTPException(404, "Unknown X-ray sample.")
     apply_cxr(p, run_cxr(Image.open(APP / "samples/cxr" / s["file"])), body.sample_id)
@@ -190,6 +200,7 @@ def xray(pid: str, body: Diag):
 @app.post("/api/patients/{pid}/xray-upload")
 async def xray_upload(pid: str, file: UploadFile = File(...)):
     p = get(pid)
+    if cxr_model is None: raise HTTPException(503, MISSING)
     try: img = Image.open(io.BytesIO(await file.read()))
     except Exception: raise HTTPException(400, "That file is not an image. Upload a PNG or JPG chest X-ray.")
     apply_cxr(p, run_cxr(img), f"upload: {file.filename}")
