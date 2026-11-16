@@ -1,5 +1,7 @@
 # HackRx: ambulance-to-bed handoff
 
+**Live demo: https://relay-triage.vercel.app** (runs in the browser; each visitor gets a private copy, **Reset demo** restores the example patients)
+
 Built at SacHacks HackRx (UC Davis Betty Irene Moore School of Nursing), for the **Best Clinical Impact** track.
 
 A proof-of-concept website that follows an emergency patient from the ambulance to a hospital bed. Paramedics enter vitals and visible injuries, and every next provider sees and adds to the same record. The app shows a **bed-priority score** built from three visible parts:
