@@ -1,0 +1,154 @@
+{
+  "ecg": [
+    {
+      "id": "ecg-19669",
+      "ecg_id": 19669,
+      "true_labels": [
+        "NORM"
+      ],
+      "age": 57.0,
+      "sex": "M"
+    },
+    {
+      "id": "ecg-11884",
+      "ecg_id": 11884,
+      "true_labels": [
+        "NORM"
+      ],
+      "age": 65.0,
+      "sex": "M"
+    },
+    {
+      "id": "ecg-14912",
+      "ecg_id": 14912,
+      "true_labels": [
+        "MI"
+      ],
+      "age": 73.0,
+      "sex": "M"
+    },
+    {
+      "id": "ecg-19187",
+      "ecg_id": 19187,
+      "true_labels": [
+        "MI"
+      ],
+      "age": 64.0,
+      "sex": "M"
+    },
+    {
+      "id": "ecg-10743",
+      "ecg_id": 10743,
+      "true_labels": [
+        "STTC"
+      ],
+      "age": 72.0,
+      "sex": "F"
+    },
+    {
+      "id": "ecg-17920",
+      "ecg_id": 17920,
+      "true_labels": [
+        "CD"
+      ],
+      "age": 85.0,
+      "sex": "M"
+    },
+    {
+      "id": "ecg-17404",
+      "ecg_id": 17404,
+      "true_labels": [
+        "MI",
+        "STTC"
+      ],
+      "age": 70.0,
+      "sex": "M"
+    },
+    {
+      "id": "ecg-3603",
+      "ecg_id": 3603,
+      "true_labels": [
+        "HYP"
+      ],
+      "age": 68.0,
+      "sex": "F"
+    }
+  ],
+  "cxr": [
+    {
+      "id": "cxr-00000842_000",
+      "file": "00000842_000.png",
+      "true_labels": [
+        "No Finding"
+      ],
+      "age": 38,
+      "sex": "M"
+    },
+    {
+      "id": "cxr-00001039_003",
+      "file": "00001039_003.png",
+      "true_labels": [
+        "No Finding"
+      ],
+      "age": 41,
+      "sex": "F"
+    },
+    {
+      "id": "cxr-00000591_018",
+      "file": "00000591_018.png",
+      "true_labels": [
+        "Effusion"
+      ],
+      "age": 65,
+      "sex": "M"
+    },
+    {
+      "id": "cxr-00000459_034",
+      "file": "00000459_034.png",
+      "true_labels": [
+        "Edema"
+      ],
+      "age": 54,
+      "sex": "F"
+    },
+    {
+      "id": "cxr-00000468_016",
+      "file": "00000468_016.png",
+      "true_labels": [
+        "Pneumothorax"
+      ],
+      "age": 31,
+      "sex": "M"
+    },
+    {
+      "id": "cxr-00000579_001",
+      "file": "00000579_001.png",
+      "true_labels": [
+        "Cardiomegaly",
+        "Pleural_Thickening"
+      ],
+      "age": 60,
+      "sex": "F"
+    },
+    {
+      "id": "cxr-00000773_001",
+      "file": "00000773_001.png",
+      "true_labels": [
+        "Atelectasis",
+        "Pneumonia"
+      ],
+      "age": 67,
+      "sex": "M"
+    },
+    {
+      "id": "cxr-00001158_002",
+      "file": "00001158_002.png",
+      "true_labels": [
+        "Atelectasis",
+        "Mass"
+      ],
+      "age": 67,
+      "sex": "M"
+    }
+  ]
+}

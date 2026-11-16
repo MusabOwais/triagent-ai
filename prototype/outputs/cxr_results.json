@@ -1,0 +1,43 @@
+{
+  "n_images": 4999,
+  "n_patients": 1335,
+  "n_train": 3597,
+  "n_val": 382,
+  "n_test": 1020,
+  "val_macro_auroc": 0.7268541208870893,
+  "test_macro_auroc": 0.7082272409790282,
+  "test_auroc_per_finding": {
+    "Atelectasis": 0.7545517458320226,
+    "Cardiomegaly": 0.7514817547785104,
+    "Effusion": 0.808355868739924,
+    "Infiltration": 0.6786418026418026,
+    "Mass": 0.7329246231155779,
+    "Nodule": 0.5400293586269196,
+    "Pneumonia": 0.6591435185185186,
+    "Pneumothorax": 0.7236864123159303,
+    "Consolidation": 0.7019033597980966,
+    "Edema": 0.8764558404558405,
+    "Emphysema": 0.6673193838349931,
+    "Fibrosis": 0.6892461117511521,
+    "Pleural_Thickening": 0.6232143523180784,
+    "Hernia": null
+  },
+  "test_positives_per_finding": {
+    "Atelectasis": 85,
+    "Cardiomegaly": 43,
+    "Effusion": 82,
+    "Infiltration": 195,
+    "Mass": 25,
+    "Nodule": 36,
+    "Pneumonia": 12,
+    "Pneumothorax": 24,
+    "Consolidation": 19,
+    "Edema": 45,
+    "Emphysema": 27,
+    "Fibrosis": 28,
+    "Pleural_Thickening": 27,
+    "Hernia": 0
+  },
+  "test_auroc_any_finding_vs_no_finding": 0.6966392704124389,
+  "literature_reference": "CheXNet-style DenseNet-121 on full NIH (~112k images): mean AUROC ~0.81-0.84"
+}

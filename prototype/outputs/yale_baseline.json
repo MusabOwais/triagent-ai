@@ -1,0 +1,39 @@
+{
+  "n_ambulance": 190370,
+  "n_features": 496,
+  "admit_rate": 0.47252718390502707,
+  "auroc": 0.8370510588494798,
+  "auprc": 0.8131180320161584,
+  "brier_raw": 0.1644247662532869,
+  "brier_calibrated": 0.1648004864984407,
+  "best_iter": 339,
+  "auroc_vitals_present": 0.837838742152163,
+  "auroc_vitals_missing": 0.8213298621333618,
+  "subgroup_auroc": {
+    "gender=Female": 0.826,
+    "gender=Male": 0.848,
+    "race=Black or African American": 0.85,
+    "race=Other": 0.849,
+    "race=White or Caucasian": 0.82,
+    "age 18-40": 0.791,
+    "age 40-65": 0.81,
+    "age 65-200": 0.761
+  },
+  "top_features": {
+    "age": 0.213,
+    "previousdispo": 0.0959,
+    "cc_alcoholintoxication": 0.0566,
+    "n_edvisits": 0.042,
+    "htn": 0.0393,
+    "cc_motorvehiclecrash": 0.038,
+    "triage_vital_hr": 0.034,
+    "n_admissions": 0.0302,
+    "triage_vital_o2_device": 0.024,
+    "triage_vital_temp": 0.0231,
+    "triage_vital_dbp": 0.0188,
+    "cc_shortnessofbreath": 0.0186,
+    "triage_vital_sbp": 0.0163,
+    "cc_alteredmentalstatus": 0.0138,
+    "n_surgeries": 0.0117
+  }
+}

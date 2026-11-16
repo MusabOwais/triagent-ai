@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay Triage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=Schibsted+Grotesk:wght@600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="mark" aria-hidden="true"></span>Relay Triage <span class="poc">Proof of concept</span></div>
+  <nav>
+    <a href="#ambulance" data-view="ambulance">Ambulance</a>
+    <a href="#board" data-view="board">ER board</a>
+  </nav>
+  <div class="tools">
+    <a class="ghost" href="https://claude.ai/artifact/3tEocjVb1XgnjEAo375GqD" target="_blank" rel="noopener">Formulas</a>
+    <button id="reset" class="ghost" type="button">Reset demo</button>
+  </div>
+</header>
+<aside class="legend" aria-label="Risk score scale">
+  <span class="lg-title">Risk score scale</span>
+  <span class="lg"><span class="s b-crit">80–100</span><b>Critical</b><span>Front of every queue</span></span>
+  <span class="lg"><span class="s b-high">60–79</span><b>High</b><span>Next available ECG, X-ray or bed</span></span>
+  <span class="lg"><span class="s b-mod">40–59</span><b>Moderate</b><span>Standard priority</span></span>
+  <span class="lg"><span class="s b-low">20–39</span><b>Low</b><span>Can wait; wait time raises priority</span></span>
+  <span class="lg"><span class="s b-min">1–19</span><b>Minimal</b><span>Lowest priority; wait time raises priority</span></span>
+  <span class="lg-note">Before diagnostics the score is a calibrated admission probability (70 ≈ 70% of similar Yale patients admitted). After ECG/X-ray it is a priority score on the same scale.</span>
+</aside>
+<main id="app"></main>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

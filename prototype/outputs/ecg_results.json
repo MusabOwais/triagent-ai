@@ -1,0 +1,22 @@
+{
+  "n_train": 17084,
+  "n_val": 2146,
+  "n_test": 2158,
+  "val_macro_auroc": 0.9253384267247556,
+  "test_macro_auroc": 0.9207870516323359,
+  "test_auroc_per_class": {
+    "NORM": 0.9413939180646254,
+    "MI": 0.923836499321574,
+    "STTC": 0.934026829191079,
+    "CD": 0.913402284461007,
+    "HYP": 0.8912757271233935
+  },
+  "test_prevalence": {
+    "NORM": 0.44600000977516174,
+    "MI": 0.2549999952316284,
+    "STTC": 0.2409999966621399,
+    "CD": 0.23000000417232513,
+    "HYP": 0.12099999934434891
+  },
+  "literature_reference": "Strodthoff et al. 2020 superdiagnostic test macro-AUROC ~0.92-0.93 (xresnet1d/inception1d)"
+}

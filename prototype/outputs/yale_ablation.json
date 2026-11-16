@@ -1,0 +1,33 @@
+{
+  "vitals_only": {
+    "auroc": 0.654,
+    "auroc_vitals_present": 0.693
+  },
+  "demo+vitals": {
+    "auroc": 0.754,
+    "auroc_vitals_present": 0.762
+  },
+  "demo+vitals+complaint (what EMT sees, no records)": {
+    "auroc": 0.818,
+    "auroc_vitals_present": 0.818
+  },
+  "+pmh": {
+    "auroc": 0.83,
+    "auroc_vitals_present": 0.831
+  },
+  "+pmh+util (no meds)": {
+    "auroc": 0.836,
+    "auroc_vitals_present": 0.837
+  },
+  "meds_only": {
+    "auroc": 0.807,
+    "auroc_vitals_present": 0.81
+  },
+  "full": {
+    "auroc": 0.904,
+    "auroc_vitals_present": 0.908
+  },
+  "reference: ESI alone (nurse triage)": {
+    "auroc": 0.635
+  }
+}
