@@ -1,0 +1,9 @@
+# raw datasets and big intermediates never go in git
+data/
+*.rdata
+*.RData
+*.npz
+*.npy
+__pycache__/
+.pytest_cache/
+.venv/
