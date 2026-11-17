@@ -1,5 +1,7 @@
 # Triagent AI
 
+**1st Place, Best Clinical Impact: SacHacks HackRx 2026** (40+ teams across 5 categories)
+
 **Live demo: https://triagent-ai.vercel.app** (runs in the browser; each visitor gets a private copy, **Reset demo** restores the example patients)
 
 Built at SacHacks HackRx (UC Davis Betty Irene Moore School of Nursing), for the **Best Clinical Impact** track.
