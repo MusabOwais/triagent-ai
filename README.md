@@ -2,7 +2,7 @@
 
 **1st Place, Best Clinical Impact: SacHacks HackRx 2026** (40+ teams across 5 categories)
 
-> **Team project.** Built by a team of three at SacHacks HackRx 2026. This is a copy of the team repo, [ymeziad/hackrx-bed-handoff](https://github.com/ymeziad/hackrx-bed-handoff). My part was the backend (Role 2: `backend/`); the ML models and the frontend were built by my teammates.
+> **Team project.** Built by a team of three at SacHacks HackRx 2026. This is a copy of the team repo, [ymeziad/hackrx-bed-handoff](https://github.com/ymeziad/hackrx-bed-handoff). My part was the backend (Role 2: `backend/`), including training models on the hackathon datasets. My teammates built the frontend and the `ml/` pipeline.
 
 **Live demo: https://triagent-ai.vercel.app** (runs in the browser; each visitor gets a private copy, **Reset demo** restores the example patients)
 
